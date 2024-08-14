@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
+
 from shopping_list.api.viewsets import ShoppingItemViewSet
 
 
