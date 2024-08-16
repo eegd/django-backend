@@ -7,7 +7,7 @@ class ShoppingItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingItem
         fields = ["id", "name", "purchased"]
-        read_only_fields = "id"
+        read_only_fields = ["id"]
 
     def create(self, validated_data, **kwargs):
         validated_data["shopping_list_id"] = self.context["request"].parser_context[
@@ -24,7 +24,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "shopping_items"]
 
     def create(self, validated_data):
-        items_data = validated_data.pop("shopping_items")
+        items_data = validated_data.pop("shopping_items", [])
         shopping_list = ShoppingList.objects.create(**validated_data)
 
         for item_data in items_data:

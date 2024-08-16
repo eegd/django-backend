@@ -1,7 +1,6 @@
-from django.db import migrations, models
-
-import django.db.models.deletion
 import uuid
+
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -37,7 +36,7 @@ class Migration(migrations.Migration):
                 (
                     "shopping_list",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
+                        on_delete=models.deletion.CASCADE,
                         related_name="shopping_items",
                         to="shopping_list.shoppinglist",
                     ),
