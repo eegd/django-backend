@@ -20,12 +20,12 @@ from shopping_list.api.views import (
 
 urlpatterns = [
     path(
-        "api/shopping-lists/", ListAddShoppingList.as_view(), name="all_shopping_lists"
+        "api/shopping-lists/", ListAddShoppingList.as_view(), name="all-shopping-lists"
     ),
     path(
         "api/shopping-lists/<uuid:pk>/",
         ShoppingListDetail.as_view(),
-        name="shopping_list_detail",
+        name="shopping-list-detail",
     ),
     path(
         "api/shopping-lists/<uuid:pk>/shopping-items/",
