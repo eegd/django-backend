@@ -1,12 +1,18 @@
+import os
+
+import dj_database_url
+
+from django.core.management.utils import get_random_secret_key
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-4#jj-3#iyef!kttq*3s74&*g!*sm5x9(1%c(&1!13wq#b8%#!o"
+SECRET_KEY = os.environ.get("SECRET_KEY", default=get_random_secret_key())
 
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS", default="127.0.0.1 localhost [::1]").split(" ")
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -36,6 +42,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -61,9 +68,11 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+
+DATABASES["default"] = dj_database_url.config(default="sqlite:///db.sqlite3")
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -104,3 +113,7 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVER_INCLUDE_SCHEMA": False,
 }
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

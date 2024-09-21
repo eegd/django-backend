@@ -15,25 +15,25 @@ from shopping_list.api.views import (
 # router.register("shopping-items", ShoppingItemViewSet, basename="shopping-items")
 
 # urlpatterns = [
-#     path("api/", include(router.urls)),
+#     path("", include(router.urls)),
 # ]
 
 urlpatterns = [
     path(
-        "api/shopping-lists/", ListAddShoppingList.as_view(), name="all-shopping-lists"
+        "shopping-lists/", ListAddShoppingList.as_view(), name="all-shopping-lists"
     ),
     path(
-        "api/shopping-lists/<uuid:pk>/",
+        "shopping-lists/<uuid:pk>/",
         ShoppingListDetail.as_view(),
         name="shopping-list-detail",
     ),
     path(
-        "api/shopping-lists/<uuid:pk>/shopping-items/",
+        "shopping-lists/<uuid:pk>/shopping-items/",
         AddShoppingItem.as_view(),
         name="add-shopping-item",
     ),
     path(
-        "api/shopping-lists/<uuid:pk>/shopping-items/<uuid:item_pk>/",
+        "shopping-lists/<uuid:pk>/shopping-items/<uuid:item_pk>/",
         ShoppingItemDetail.as_view(),
         name="shopping-item-detail",
     ),
