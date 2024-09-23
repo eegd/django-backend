@@ -10,9 +10,7 @@ from shopping_list.models import ShoppingList, ShoppingItem
 @pytest.mark.django_db
 def test_valid_shoppping_list_is_created():
     url = reverse("all-shopping-lists")
-    data = {
-        "name": "Groceries",
-    }
+    data = {"name": "Groceries"}
     client = APIClient()
     response = client.post(url, data)
 
@@ -50,16 +48,11 @@ def test_shopping_list_is_retrieved_by_id():
 
 @pytest.mark.django_db
 def test_shopping_list_includes_only_corresponding_items():
-
     shopping_list = ShoppingList.objects.create(name="Groceries")
     another_shopping_list = ShoppingList.objects.create(name="Books")
 
-    ShoppingItem.objects.create(
-        shopping_list=shopping_list, name="Eggs", purchased=False
-    )
-    ShoppingItem.objects.create(
-        shopping_list=another_shopping_list, name="The seven sisters", purchased=False
-    )
+    ShoppingItem.objects.create(shopping_list=shopping_list, name="Eggs", purchased=False)
+    ShoppingItem.objects.create(shopping_list=another_shopping_list, name="The seven sisters", purchased=False)
 
     url = reverse("shopping-list-detail", args=[shopping_list.id])
     client = APIClient()
@@ -75,9 +68,7 @@ def test_shopping_list_name_is_changed():
 
     url = reverse("shopping-list-detail", args=[shopping_list.id])
 
-    data = {
-        "name": "Food",
-    }
+    data = {"name": "Food"}
 
     client = APIClient()
     response = client.put(url, data=data, format="json")
@@ -88,7 +79,6 @@ def test_shopping_list_name_is_changed():
 
 @pytest.mark.django_db
 def test_shopping_list_not_changed_because_name_missing():
-
     shopping_list = ShoppingList.objects.create(name="Groceries")
 
     url = reverse("shopping-list-detail", args=[shopping_list.id])
@@ -107,9 +97,7 @@ def test_shopping_list_name_is_changed_with_partial_update():
 
     url = reverse("shopping-list-detail", args=[shopping_list.id])
 
-    data = {
-        "name": "Food",
-    }
+    data = {"name": "Food"}
 
     client = APIClient()
     response = client.patch(url, data=data, format="json")

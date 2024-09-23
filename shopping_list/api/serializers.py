@@ -10,9 +10,7 @@ class ShoppingItemSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
     def create(self, validated_data, **kwargs):
-        validated_data["shopping_list_id"] = self.context["request"].parser_context[
-            "kwargs"
-        ]["pk"]
+        validated_data["shopping_list_id"] = self.context["request"].parser_context["kwargs"]["pk"]
         return super(ShoppingItemSerializer, self).create(validated_data)
 
 
