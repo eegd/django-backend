@@ -4,8 +4,8 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from shopping_list.api.serializers import ShoppingItemSerializer
-from shopping_list.models import ShoppingItem
+from app.api.serializers import ShoppingItemSerializer
+from app.models import ShoppingItem
 
 
 class ShoppingItemViewSet(ModelViewSet):

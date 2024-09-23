@@ -1,6 +1,6 @@
 import pytest
 
-from shopping_list.models import ShoppingItem, ShoppingList
+from app.models import ShoppingItem, ShoppingList
 
 
 @pytest.fixture(scope="session")

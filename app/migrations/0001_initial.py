@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=models.deletion.CASCADE,
                         related_name="shopping_items",
-                        to="shopping_list.shoppinglist",
+                        to="app.shoppinglist",
                     ),
                 ),
             ],
