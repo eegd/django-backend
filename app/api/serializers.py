@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from shopping_list.models import ShoppingItem, ShoppingList
+from app.models import ShoppingItem, ShoppingList
 
 
 class ShoppingItemSerializer(serializers.ModelSerializer):

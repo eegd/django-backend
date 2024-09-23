@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from shopping_list.models import ShoppingList, ShoppingItem
+from app.models import ShoppingList, ShoppingItem
 
 
 @pytest.mark.django_db
