@@ -19,22 +19,8 @@ from shopping_list.api.views import (
 # ]
 
 urlpatterns = [
-    path(
-        "shopping-lists/", ListAddShoppingList.as_view(), name="all-shopping-lists"
-    ),
-    path(
-        "shopping-lists/<uuid:pk>/",
-        ShoppingListDetail.as_view(),
-        name="shopping-list-detail",
-    ),
-    path(
-        "shopping-lists/<uuid:pk>/shopping-items/",
-        AddShoppingItem.as_view(),
-        name="add-shopping-item",
-    ),
-    path(
-        "shopping-lists/<uuid:pk>/shopping-items/<uuid:item_pk>/",
-        ShoppingItemDetail.as_view(),
-        name="shopping-item-detail",
-    ),
+    path("shopping-lists/", ListAddShoppingList.as_view(), name="all-shopping-lists"),
+    path("shopping-lists/<uuid:pk>/", ShoppingListDetail.as_view(), name="shopping-list-detail"),
+    path("shopping-lists/<uuid:pk>/shopping-items/", AddShoppingItem.as_view(), name="add-shopping-item"),
+    path("shopping-lists/<uuid:pk>/shopping-items/<uuid:item_pk>/", ShoppingItemDetail.as_view(), name="shopping-item-detail"),
 ]
