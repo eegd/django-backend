@@ -5,18 +5,20 @@ services:
     image: postgres:16-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=shopping_user
-      - POSTGRES_PASSWORD=shopping_password
-      - POSTGRES_DB=shopping_db
+    env_file:
+      - ./.env/.dev
 
   app:
-    build: .
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    command: /start
+    volumes:
+      - .:/app
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://shopping_user:shopping_password@db:5432/shopping_db
+    env_file:
+      - ./.env/.dev
     depends_on:
       - db
 
