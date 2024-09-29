@@ -1,6 +1,13 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from app.models import ShoppingItem, ShoppingList
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username"]
 
 
 class ShoppingItemSerializer(serializers.ModelSerializer):
@@ -16,10 +23,11 @@ class ShoppingItemSerializer(serializers.ModelSerializer):
 
 class ShoppingListSerializer(serializers.ModelSerializer):
     shopping_items = ShoppingItemSerializer(many=True, read_only=True)
+    members = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = ShoppingList
-        fields = ["id", "name", "shopping_items"]
+        fields = ["id", "name", "shopping_items", "members"]
 
     def create(self, validated_data):
         items_data = validated_data.pop("shopping_items", [])

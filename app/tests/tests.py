@@ -8,10 +8,10 @@ from app.models import ShoppingList, ShoppingItem
 
 
 @pytest.mark.django_db
-def test_valid_shoppping_list_is_created():
+def test_valid_shopping_list_is_created(create_user, create_authenticated_client):
     url = reverse("all-shopping-lists")
     data = {"name": "Groceries"}
-    client = APIClient()
+    client = create_authenticated_client(create_user())
     response = client.post(url, data)
 
     assert response.status_code == status.HTTP_201_CREATED
