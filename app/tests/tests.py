@@ -2,16 +2,16 @@ import pytest
 
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APIClient
 
-from app.models import ShoppingList, ShoppingItem
+from app.models import ShoppingList
 
 
 @pytest.mark.django_db
 def test_valid_shopping_list_is_created(create_user, create_authenticated_client):
+    client = create_authenticated_client(user=create_user())
     url = reverse("all-shopping-lists")
     data = {"name": "Groceries"}
-    client = create_authenticated_client(create_user())
+
     response = client.post(url, data)
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -19,12 +19,14 @@ def test_valid_shopping_list_is_created(create_user, create_authenticated_client
 
 
 @pytest.mark.django_db
-def test_all_shopping_lists_are_listed():
+def test_all_shopping_lists_are_listed(create_shopping_list, create_user, create_authenticated_client):
+    user = create_user()
+    client = create_authenticated_client(user=user)
     url = reverse("all-shopping-lists")
-    ShoppingList.objects.create(name="Groceries")
-    ShoppingList.objects.create(name="Books")
 
-    client = APIClient()
+    create_shopping_list(name="Groceries", user=user)
+    create_shopping_list(name="Books", user=user)
+
     response = client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
@@ -34,28 +36,26 @@ def test_all_shopping_lists_are_listed():
 
 
 @pytest.mark.django_db
-def test_shopping_list_is_retrieved_by_id():
-    shopping_list = ShoppingList.objects.create(name="Groceries")
+def test_shopping_item_is_retrieved_by_id(create_shopping_item, create_user, create_authenticated_client):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_item = create_shopping_item(list_name="Groceries", item_name="Eggs", user=user)
+    url = reverse("shopping-item-detail", kwargs={"pk": shopping_item.shopping_list.id, "item_pk": shopping_item.id})
 
-    url = reverse("shopping-list-detail", args=[shopping_list.id])
-    client = APIClient()
-
-    response = client.get(url, format="json")
+    response = client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["name"] == "Groceries"
+    assert response.data["name"] == "Eggs"
 
 
 @pytest.mark.django_db
-def test_shopping_list_includes_only_corresponding_items():
-    shopping_list = ShoppingList.objects.create(name="Groceries")
-    another_shopping_list = ShoppingList.objects.create(name="Books")
+def test_shopping_list_includes_only_corresponding_items(create_shopping_item, create_user, create_authenticated_client):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_item = create_shopping_item(list_name="Groceries", item_name="Eggs", user=user)
+    another_shopping_item = create_shopping_item(list_name="Books", item_name="The seven sisters", user=user)
+    url = reverse("shopping-list-detail", args=[shopping_item.shopping_list.id])
 
-    ShoppingItem.objects.create(shopping_list=shopping_list, name="Eggs", purchased=False)
-    ShoppingItem.objects.create(shopping_list=another_shopping_list, name="The seven sisters", purchased=False)
-
-    url = reverse("shopping-list-detail", args=[shopping_list.id])
-    client = APIClient()
     response = client.get(url)
 
     assert len(response.data["shopping_items"]) == 1
@@ -63,70 +63,66 @@ def test_shopping_list_includes_only_corresponding_items():
 
 
 @pytest.mark.django_db
-def test_shopping_list_name_is_changed():
-    shopping_list = ShoppingList.objects.create(name="Groceries")
-
+def test_shopping_list_name_is_changed(create_shopping_list, create_user, create_authenticated_client):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
     url = reverse("shopping-list-detail", args=[shopping_list.id])
-
     data = {"name": "Food"}
 
-    client = APIClient()
-    response = client.put(url, data=data, format="json")
+    response = client.put(url, data=data)
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["name"] == "Food"
 
 
 @pytest.mark.django_db
-def test_shopping_list_not_changed_because_name_missing():
-    shopping_list = ShoppingList.objects.create(name="Groceries")
-
+def test_shopping_list_not_changed_because_name_missing(create_shopping_list, create_user, create_authenticated_client):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
     url = reverse("shopping-list-detail", args=[shopping_list.id])
-
     data = {"something_else": "blahblah"}
 
-    client = APIClient()
-    response = client.put(url, data=data, format="json")
+    response = client.put(url, data=data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.django_db
-def test_shopping_list_name_is_changed_with_partial_update():
-    shopping_list = ShoppingList.objects.create(name="Groceries")
-
+def test_shopping_list_name_is_changed_with_partial_update(create_shopping_list, create_user, create_authenticated_client):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
     url = reverse("shopping-list-detail", args=[shopping_list.id])
-
     data = {"name": "Food"}
 
-    client = APIClient()
-    response = client.patch(url, data=data, format="json")
+    response = client.patch(url, data=data)
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["name"] == "Food"
 
 
 @pytest.mark.django_db
-def test_partial_update_with_missing_name_has_no_impact():
-    shopping_list = ShoppingList.objects.create(name="Groceries")
-
+def test_partial_update_with_missing_name_has_no_impact(create_shopping_list, create_user, create_authenticated_client):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
     url = reverse("shopping-list-detail", args=[shopping_list.id])
-
     data = {"something_else": "blahblah"}
 
-    client = APIClient()
-    response = client.patch(url, data=data, format="json")
+    response = client.patch(url, data=data)
 
     assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
-def test_shopping_list_is_deleted():
-    shopping_list = ShoppingList.objects.create(name="Groceries")
-
+def test_shopping_list_is_deleted(create_shopping_list, create_user, create_authenticated_client):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
     url = reverse("shopping-list-detail", args=[shopping_list.id])
 
-    client = APIClient()
     response = client.delete(url)
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
