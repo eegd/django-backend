@@ -31,8 +31,8 @@ def create_shopping_item():
 
 @pytest.fixture(scope="session")
 def create_user():
-    def _create_user():
-        return User.objects.create_user("user", None, "password")
+    def _create_user(username="user"):
+        return User.objects.create_user(username=username)
 
     return _create_user
 
