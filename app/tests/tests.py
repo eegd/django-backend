@@ -32,8 +32,8 @@ def test_client_retrieves_only_shopping_lists_they_are_member_of(create_user, cr
     response = client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data) == 1
-    assert response.data[0]["name"] == "Groceries"
+    assert len(response.data["results"]) == 1
+    assert response.data["results"][0]["name"] == "Groceries"
 
 
 @pytest.mark.django_db
@@ -291,8 +291,8 @@ def test_list_shopping_items_is_retrieved_by_shopping_list_member(create_user, c
     url = reverse("list-add-shopping-item",  kwargs={"pk": shopping_item.shopping_list.id})
     response = client.get(url)
 
-    assert len(response.data) == 1
-    assert response.data[0]["name"] == shopping_item.name
+    assert len(response.data["results"]) == 1
+    assert response.data["results"][0]["name"] == shopping_item.name
 
 
 @pytest.mark.django_db
@@ -319,8 +319,8 @@ def test_list_shopping_items_only_the_ones_belonging_to_the_same_shopping_list(c
     url = reverse("list-add-shopping-item", kwargs={"pk": shopping_item.shopping_list.id})
     response = client.get(url)
 
-    assert len(response.data) == 1
-    assert response.data[0]["name"] == shopping_item.name
+    assert len(response.data["results"]) == 1
+    assert response.data["results"][0]["name"] == shopping_item.name
 
 
 @pytest.mark.django_db

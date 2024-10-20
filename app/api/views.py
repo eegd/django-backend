@@ -6,6 +6,7 @@ from app.api.permission import (
     ShoppingListMembersOnly
 )
 
+from app.api.pagination import LargerResultsSetPagination
 from app.api.serializers import ShoppingItemSerializer, ShoppingListSerializer
 from app.models import ShoppingItem, ShoppingList
 
@@ -35,10 +36,11 @@ class ShoppingListDetail(generics.RetrieveUpdateDestroyAPIView):
 class ListAddShoppingItem(generics.ListCreateAPIView):
     serializer_class = ShoppingItemSerializer
     permission_classes = [AllShoppingItemsShoppingListMembersOnly]
+    pagination_class = LargerResultsSetPagination
 
     def get_queryset(self):
         shopping_list = self.kwargs["pk"]
-        queryset = ShoppingItem.objects.filter(shopping_list=shopping_list)
+        queryset = ShoppingItem.objects.filter(shopping_list=shopping_list).order_by("purchased")
 
         return queryset
 
