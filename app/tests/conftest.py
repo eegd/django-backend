@@ -3,7 +3,7 @@ import pytest
 from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 
-from app.models import ShoppingItem, ShoppingList
+from app.api.models import ShoppingItem, ShoppingList
 
 
 @pytest.fixture(scope="session")

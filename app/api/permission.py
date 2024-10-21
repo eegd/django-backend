@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from app.models import ShoppingList
+from app.api.models import ShoppingList
 
 
 class ShoppingListMembersOnly(permissions.BasePermission):

@@ -6,9 +6,9 @@ from app.api.permission import (
     ShoppingListMembersOnly
 )
 
-from app.api.pagination import LargerResultsSetPagination
+from app.api.models import ShoppingItem, ShoppingList
 from app.api.serializers import ShoppingItemSerializer, ShoppingListSerializer
-from app.models import ShoppingItem, ShoppingList
+from utils.pagination import LargerResultsSetPagination
 
 
 class ListAddShoppingList(generics.ListCreateAPIView):

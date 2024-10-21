@@ -3,7 +3,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from app.models import ShoppingList
+from app.api.models import ShoppingList
 
 
 @pytest.mark.django_db
