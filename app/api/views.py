@@ -22,7 +22,7 @@ class ListAddShoppingList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         members = self.request.user
-        queryset = ShoppingList.objects.filter(members=members)
+        queryset = ShoppingList.objects.filter(members=members).order_by("-last_interaction")
 
         return queryset
 
