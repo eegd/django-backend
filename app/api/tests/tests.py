@@ -326,7 +326,7 @@ def test_list_shopping_items_only_the_ones_belonging_to_the_same_shopping_list(c
 @pytest.mark.django_db
 def test_duplicate_item_on_list_bad_request(create_user, create_authenticated_client, create_shopping_item):
     user = create_user()
-    client = create_authenticated_client(user)
+    client = create_authenticated_client(user=user)
     shopping_item = create_shopping_item(list_name="Groceries", item_name="Eggs", user=user)
 
     url = reverse("list-add-shopping-item", args=[shopping_item.shopping_list.id])

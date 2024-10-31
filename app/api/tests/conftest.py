@@ -1,6 +1,6 @@
 import pytest
 
-from django.contrib.auth.models import User
+from app.api.models import User
 from rest_framework.test import APIClient
 
 from app.api.models import ShoppingItem, ShoppingList

@@ -1,7 +1,6 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from app.api.models import ShoppingItem, ShoppingList
+from app.api.models import User, ShoppingItem, ShoppingList
 
 
 class UserSerializer(serializers.ModelSerializer):

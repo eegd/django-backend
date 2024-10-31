@@ -48,7 +48,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "app",
+    "app.api",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -148,15 +148,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 APPEND_SLASH = False
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Setup pagination for API responses
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 5,
+
+    # Ensure only logged-in users can access API
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+# SETTINGS for OpenAPI Documentation
 SPECTACULAR_SETTINGS = {
     "TITLE": "DJANGO BACKEND",
     "DESCRIPTION": "",
     "VERSION": "1.0.0",
     "SERVER_INCLUDE_SCHEMA": False,
 }
+
+# Replace Django's default User model with a custom user model
+AUTH_USER_MODEL = "api.User"
