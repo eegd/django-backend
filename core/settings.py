@@ -150,6 +150,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 APPEND_SLASH = False
 
 REST_FRAMEWORK = {
+    # Allow flexibility for both web users and API clients
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
@@ -161,7 +162,20 @@ REST_FRAMEWORK = {
     # Ensure only logged-in users can access API
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 
+    # Auto-generate OpenAPI documentation
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+
+    # Prevent API overload
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "utils.throttling.DailyRateThrottle",
+        "utils.throttling.MinuteRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "10/hour",
+        "user_day": "10000/day",
+        "user_minute": "200/minute",
+    },
 }
 
 # SETTINGS for OpenAPI Documentation
