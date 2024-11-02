@@ -1,5 +1,5 @@
 from django.urls import include, path
-# from rest_framework import routers
+from rest_framework.authtoken.views import obtain_auth_token
 
 from app.api.views import (
     ListAddShoppingItem,
@@ -7,18 +7,10 @@ from app.api.views import (
     ShoppingItemDetail,
     ShoppingListDetail,
 )
-# from app.api.viewsets import ShoppingItemViewSet
-
-
-# router = routers.DefaultRouter()
-# router.register("shopping-items", ShoppingItemViewSet, basename="shopping-items")
-
-# urlpatterns = [
-#     path("", include(router.urls)),
-# ]
 
 urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest-framework")),
+    path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
     path("shopping-lists/", ListAddShoppingList.as_view(), name="all-shopping-lists"),
     path("shopping-lists/<uuid:pk>/", ShoppingListDetail.as_view(), name="shopping-list-detail"),
     path("shopping-lists/<uuid:pk>/shopping-items/", ListAddShoppingItem.as_view(), name="list-add-shopping-item"),

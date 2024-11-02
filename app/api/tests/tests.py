@@ -2,8 +2,9 @@ import pytest
 
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from app.api.models import ShoppingList
+from app.api.models import ShoppingList, User
 
 
 @pytest.mark.django_db
@@ -335,3 +336,23 @@ def test_duplicate_item_on_list_bad_request(create_user, create_authenticated_cl
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data[0] == "There's already this item on the list"
+
+
+@pytest.mark.django_db
+def test_call_with_token_authentication():
+    username = "user"
+    password = "password"
+    client = APIClient()
+
+    User.objects.create_user(username=username, password=password)
+
+    token_url = reverse("api_token_auth")
+    data = {"username": username, "password": password}
+    token_response = client.post(token_url, data)
+    token = token_response.data["token"]
+
+    url = reverse("all-shopping-lists")
+    client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK

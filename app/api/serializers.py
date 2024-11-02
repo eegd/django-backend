@@ -1,3 +1,5 @@
+from typing import List
+
 from rest_framework import serializers
 
 from app.api.models import User, ShoppingItem, ShoppingList
@@ -38,5 +40,5 @@ class ShoppingListSerializer(serializers.ModelSerializer):
         model = ShoppingList
         fields = ["id", "name", "unpurchased_items", "members"]
 
-    def get_unpurchased_items(self, obj):
+    def get_unpurchased_items(self, obj) -> List:
         return [{"name": shopping_item.name} for shopping_item in obj.shopping_items.filter(purchased=False)]
