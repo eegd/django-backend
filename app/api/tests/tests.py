@@ -356,3 +356,97 @@ def test_call_with_token_authentication():
     response = client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_add_members_list_member(create_user, create_authenticated_client, create_shopping_list):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
+
+    another_user = User.objects.create(username="another_user", password="password")
+    third_user = User.objects.create(username="third_user", password="password")
+
+    url = reverse("shopping-list-add-members", args=[shopping_list.id])
+    data = {"members": [another_user.id, third_user.id]}
+    response = client.put(url, data)
+
+    assert len(response.data["members"]) == 3
+    assert another_user.id in response.data["members"]
+
+
+@pytest.mark.django_db
+def test_add_members_not_list_member(create_user, create_authenticated_client, create_shopping_list):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+
+    list_creator = User.objects.create(username="list_creator", password="password")
+    shopping_list = create_shopping_list(name="Groceries", user=list_creator)
+
+    url = reverse("shopping-list-add-members", args=[shopping_list.id])
+    data = {"members": [user.id]}
+    response = client.put(url, data)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_add_members_wrong_data(create_user, create_authenticated_client, create_shopping_list):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
+
+    url = reverse("shopping-list-add-members", args=[shopping_list.id])
+    data = {"members": [11, 13]}
+    response = client.put(url, data)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_remove_members_list_member(create_user, create_authenticated_client, create_shopping_list):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
+
+    another_user = User.objects.create(username="another_user", password="password")
+    third_user = User.objects.create(username="third_user", password="password")
+
+    shopping_list.members.add(another_user)
+    shopping_list.members.add(third_user)
+
+    url = reverse("shopping-list-remove-members", args=[shopping_list.id])
+    data = {"members": [another_user.id, third_user.id]}
+    response = client.put(url, data)
+
+    assert len(response.data["members"]) == 1
+    assert another_user.id not in response.data["members"]
+    assert third_user.id not in response.data["members"]
+
+
+@pytest.mark.django_db
+def test_remove_members_not_list_member(create_user, create_authenticated_client, create_shopping_list):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+
+    list_creator = User.objects.create(username="list_creator", password="password")
+    shopping_list = create_shopping_list(name="Groceries", user=list_creator)
+
+    url = reverse("shopping-list-remove-members", args=[shopping_list.id])
+    data = {"members": [user.id]}
+    response = client.put(url, data)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_remove_members_wrong_data(create_user, create_authenticated_client, create_shopping_list):
+    user = create_user()
+    client = create_authenticated_client(user=user)
+    shopping_list = create_shopping_list(name="Groceries", user=user)
+
+    url = reverse("shopping-list-remove-members", args=[shopping_list.id])
+    data = {"members": [11, 13]}
+    response = client.put(url, data)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST

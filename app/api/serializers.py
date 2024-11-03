@@ -2,7 +2,33 @@ from typing import List
 
 from rest_framework import serializers
 
-from app.api.models import User, ShoppingItem, ShoppingList
+from app.api.models import ShoppingItem, ShoppingList, User
+
+
+class AddMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShoppingList
+        fields = ["members"]
+
+    def update(self, instance, validated_data):
+        for member in validated_data["members"]:
+            instance.members.add(member)
+            instance.save()
+
+        return instance
+
+
+class RemoveMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShoppingList
+        fields = ["members"]
+
+    def update(self, instance, validated_data):
+        for member in validated_data["members"]:
+            instance.members.remove(member)
+            instance.save()
+
+        return instance
 
 
 class UserSerializer(serializers.ModelSerializer):
