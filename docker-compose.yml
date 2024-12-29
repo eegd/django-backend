@@ -14,7 +14,7 @@ services:
       dockerfile: ./compose/local/django/Dockerfile
     command: /start
     volumes:
-      - .:/app
+      - .:/project
     ports:
       - "8000:8000"
     env_file:
